@@ -1,17 +1,16 @@
 Deno.serve(async (request) => {
   const url = new URL(request.url);
 
-  // آدرس پنل یا بک‌اند خود را از طریق متغیر محیطی BACKEND_URL تنظیم کنید
-  const BACKEND_URL = Deno.env.get("BACKEND_URL") || "https://your-panel-domain.com";
-  const backendUrlObj = new URL(BACKEND_URL);
-
   if (!url.pathname.startsWith("/sub/")) {
     return new Response("Bitzy VPN", {
       headers: { "Content-Type": "text/plain; charset=utf-8" },
     });
   }
-
-  const target = BACKEND_URL + url.pathname + url.search;
+//آدرس ساب همراه با پورت که باید وارد کنید پروکسی نباشد در کلود فلر
+  const target =
+    "https://sub.example.com:2096" +
+    url.pathname +
+    url.search;
 
   try {
     const ua = request.headers.get("user-agent") || "";
@@ -29,7 +28,8 @@ Deno.serve(async (request) => {
 
     // تنظیم هدر برای ارتباط با پنل (اجبار پنل به ارسال اطلاعات ترافیک برای مرورگر)
     const fetchHeaders = new Headers();
-    fetchHeaders.set("Host", backendUrlObj.host);
+    //وارد کرد ادرس پنل بدونه پورت
+    fetchHeaders.set("Host", "panel.example.com");
     fetchHeaders.set("User-Agent", isBrowser ? "Clash" : ua);
 
     const response = await fetch(target, {
@@ -125,7 +125,7 @@ footer{text-align:center;color:#617891;font-size:12px;padding:35px 15px;letter-s
 <section class="card"><div class="label">Total Traffic Used</div><div class="value cyan">${hasStats ? gb(used) : "Unavailable"} <span class="unit">${hasStats ? "GB" : ""}</span></div><div class="note">Combined upload and download</div></section>
 <section class="card"><div class="label">Downloaded</div><div class="value">${hasStats ? gb(download) : "Unavailable"} <span class="unit">${hasStats ? "GB" : ""}</span></div><div class="note">Total inbound traffic</div></section>
 <section class="card"><div class="label">Uploaded</div><div class="value">${hasStats ? gb(upload) : "Unavailable"} <span class="unit">${hasStats ? "GB" : ""}</span></div><div class="note">Total outbound traffic</div></section>
-<section class="card"><div class="label">Traffic Limit</div><div class="value green">${!hasStats ? "Unavailable" / unlimited ? "UNLIMITED" : gb(total) + " GB"}</div><div class="progress"><div class="fill"></div></div><div class="note">${!hasStats ? "Usage information could not be retrieved" : unlimited ? "No traffic limit configured" : percent.toFixed(1) + "% of quota used"}</div></section>
+<section class="card"><div class="label">Traffic Limit</div><div class="value green">${!hasStats ? "Unavailable" : unlimited ? "UNLIMITED" : gb(total) + " GB"}</div><div class="progress"><div class="fill"></div></div><div class="note">${!hasStats ? "Usage information could not be retrieved" : unlimited ? "No traffic limit configured" : percent.toFixed(1) + "% of quota used"}</div></section>
 <section class="card"><div class="label">Expiration Date</div><div class="value">${expiry}</div><div class="note">Subscription validity</div></section>
 </div>
 </main>
@@ -142,7 +142,7 @@ footer{text-align:center;color:#617891;font-size:12px;padding:35px 15px;letter-s
       });
     }
 
-    // برای کلاینت‌های VPN جهت به‌روزرسانی ساب
+    // برای کلاینت‌های VPN (مانند کلش و غیره) جهت به‌روزرسانی ساب
     const responseHeaders = new Headers(response.headers);
     responseHeaders.set("Cache-Control", "no-store");
 
