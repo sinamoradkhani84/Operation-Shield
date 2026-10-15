@@ -1,2 +1,4 @@
 # Operation-Shield
-Bypassing restrictions on subreddit filtering
+این پروژه جهت دور زدن محدودیت های که روی ساب دامین ها اعمال شده ساخته شده است
+هدف این پروژه دور زدن محدودیت عدم import شدن و update شدن کانفیگ ها هست که user بتواند به راحتی لینک خود را آپدیت و استفاده کند
+
